@@ -1,0 +1,66 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(ardrone_gesture_control)
+
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  roscpp
+  rospy
+  std_msgs
+)
+
+
+###################################
+## catkin specific configuration ##
+###################################
+catkin_package(
+	CATKIN_DEPENDS
+    roscpp
+    sensor_msgs
+    geometry_msgs
+)
+
+###########
+## Build ##
+###########
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  include
+)
+
+## Declare a cpp library
+#add_library(${PROJECT_NAME}
+#  src/OculusObserver.cpp
+#  src/MyoObserver.cpp
+#)
+
+set(SOURCES_OMC
+  src/OculusObserver.cpp 
+  src/MyoObserver.cpp
+  src/oculus_myo_control.cpp
+)
+
+set(SOURCES_LMOC
+  src/OculusObserver.cpp 
+  src/MyoObserver.cpp
+  src/LeapObserver.cpp
+  src/leap_myo_oculus_control.cpp
+)
+
+## Declare a cpp executable
+add_executable(myo_control src/myo_control.cpp)
+add_executable(oculus_myo_control ${SOURCES_OMC})
+add_executable(leap_myo_oculus_control ${SOURCES_LMOC})
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(myo_control
+   ${catkin_LIBRARIES}
+)
+target_link_libraries(oculus_myo_control
+   ${catkin_LIBRARIES}
+)
+target_link_libraries(leap_myo_oculus_control
+   ${catkin_LIBRARIES}
+)
