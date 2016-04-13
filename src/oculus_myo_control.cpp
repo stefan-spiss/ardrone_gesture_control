@@ -9,8 +9,8 @@
 #include <std_msgs/Empty.h>
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Twist.h>
-#include <drone_control/OculusObserver.h>
-#include <drone_control/MyoObserver.h>
+#include <ardrone_gesture_control/OculusObserver.h>
+#include <ardrone_gesture_control/MyoObserver.h>
 
 #define OCULUS_YAW_THRESHOLD 0.3 //Turn head left or right (negative)
 #define OCULUS_PITCH_THRESHOLD 0.3 //Turn head up or down (negative)
@@ -172,7 +172,6 @@ int main(int argc, char **argv) {
 	}
 
 	while (ros::ok) {
-		//printf("while loop changed %d\n", myo_observer.isChanged());
 		send_control(myo_observer.getHandPose(), oculus_observer, flattrim_srv,
 				takeoff_pub, land_pub, reset_pub, steer_pub);
 		ros::spinOnce();
