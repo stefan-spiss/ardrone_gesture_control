@@ -164,10 +164,10 @@ void LeapMyoOculusDroneControl::send_control() {
 			steer_pub.publish(twist);
 
 			break;
-
+			
 			// Fly up
-		case MyoObserver::LEFT:
-			if (leapObserver.getHandPose() == LeapObserver::MYO_LEFT_SWIPE) {
+		case MyoObserver::RIGHT:
+			if (leapObserver.getHandPose() == LeapObserver::MYO_RIGHT_SWIPE) {
 				printf("Fly up\n");
 				twist.linear.z = DRONE_SPEED_YAW_UPDOWN;
 				steer_pub.publish(twist);
@@ -175,8 +175,8 @@ void LeapMyoOculusDroneControl::send_control() {
 			break;
 
 			// Fly down
-		case MyoObserver::RIGHT:
-			if (leapObserver.getHandPose() == LeapObserver::MYO_RIGHT_SWIPE) {
+		case MyoObserver::LEFT:
+			if (leapObserver.getHandPose() == LeapObserver::MYO_LEFT_SWIPE) {
 				printf("Fly down\n");
 				twist.linear.z = -DRONE_SPEED_YAW_UPDOWN;
 				steer_pub.publish(twist);
