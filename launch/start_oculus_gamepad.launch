@@ -1,0 +1,5 @@
+<launch>
+	<node name="oculus_driver" pkg="oculus_ros" type="ros_driver"/>
+	<node name="oculus_viewer" pkg="oculus_ros" type="ros_viewer"/>
+	<node name="gamepad" pkg="ardrone_gesture_control" type="controllerInput.py"/>
+</launch>

@@ -39,7 +39,7 @@ LeapMyoOculusDroneControl::~LeapMyoOculusDroneControl() {
 }
 
 void LeapMyoOculusDroneControl::controlDrone() {
-	while (ros::ok) {
+	while (ros::ok()) {
 		send_control();
 		ros::spinOnce();
 		loopRate.sleep();
@@ -98,6 +98,9 @@ bool LeapMyoOculusDroneControl::isFlying() {
 
 double LeapMyoOculusDroneControl::calculateSpeed(double minAngle,
 		double maxAngle, double currentAngle, double maxSpeed) {
+	if (fabs(currentAngle) > fabs(maxAngle)) {
+		currentAngle = maxAngle;
+	}
 	return (currentAngle - minAngle) * maxSpeed / (maxAngle - minAngle);
 }
 
@@ -134,8 +137,8 @@ void LeapMyoOculusDroneControl::send_control() {
 				if (oculusObserver.getY() > OCULUS_YAW_THRESHOLD) {
 					std::cout << "Rotate counterclockwise" << std::endl;
 					twist.angular.z = calculateSpeed(OCULUS_YAW_THRESHOLD,
-							OCULUS_MAX_YAW_THRESHOLD, oculusObserver.getY(),
-							DRONE_SPEED_YAW_UPDOWN);
+					OCULUS_MAX_YAW_THRESHOLD, oculusObserver.getY(),
+					DRONE_SPEED_YAW_UPDOWN);
 				} else if (oculusObserver.getY() < -OCULUS_YAW_THRESHOLD) {
 					printf("Rotate clockwise\n");
 					twist.angular.z = -calculateSpeed(-OCULUS_YAW_THRESHOLD,
@@ -164,7 +167,7 @@ void LeapMyoOculusDroneControl::send_control() {
 			steer_pub.publish(twist);
 
 			break;
-			
+
 			// Fly up
 		case MyoObserver::RIGHT:
 			if (leapObserver.getHandPose() == LeapObserver::MYO_RIGHT_SWIPE) {
