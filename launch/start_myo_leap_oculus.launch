@@ -1,5 +1,6 @@
 <launch>
-	<node name="myo_ros" pkg="myo_sh" type="myo_ros.py"/>	
-	<node name="leap_ros" pkg="leap_motion_ros" type="sender.py"/>
+	<node name="myo_ros" pkg="myo_sh" type="myo_ros.py"/>
 	<node name="oculus_driver" pkg="oculus_ros" type="ros_driver"/>
+	<node name="leap_ros" pkg="leap_motion_ros" type="sender.py"/>
+	<node name="oculus_viewer" pkg="oculus_ros" type="ros_viewer"/>
 </launch>

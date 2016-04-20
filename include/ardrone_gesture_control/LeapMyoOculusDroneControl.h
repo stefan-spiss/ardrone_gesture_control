@@ -29,8 +29,8 @@
  //Tilt head to the left or right (negative)
 #define OCULUS_ROLL_THRESHOLD 0.25
 
-#define DRONE_SPEED_PITCH_ROLL 1.0	//0.1
-#define DRONE_SPEED_YAW_UPDOWN 1.0	//0.5
+#define DRONE_SPEED_PITCH_ROLL 0.1
+#define DRONE_SPEED_YAW_UPDOWN 0.5
 
 #define EPSILON 0.000001
 
