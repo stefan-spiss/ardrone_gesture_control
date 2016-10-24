@@ -2,5 +2,5 @@
     <node name="oculus_driver" pkg="oculus_ros" type="ros_driver"/>
     <node name="oculus_viewer" pkg="oculus_ros" type="ros_viewer"/>
 	<node name="gamepad" pkg="ardrone_gesture_control" type="controllerInput.py"/>
-	<node name="control_node" pkg="ardrone_gesture_control" type="joypad_control"/>
+	<node name="ardrone_control" pkg="ardrone_gesture_control" type="joypad_control" output="screen"/>
 </launch>

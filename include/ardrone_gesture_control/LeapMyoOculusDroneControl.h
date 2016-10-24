@@ -41,7 +41,7 @@ public:
 			std::string &steerTopic, std::string &droneStateTopic,
 			std::string &flatTrimSrv, std::string &myoTopic,
 			std::string &leapTopicPose, std::string &leapGrabTopic,
-			std::string &oculusTopic);
+			std::string &oculusTopic, bool travelAllowed = true);
 	virtual ~LeapMyoOculusDroneControl();
 
 	void controlDrone();
@@ -79,6 +79,8 @@ private:
 	ros::Subscriber leapGrab_sub;
 
 	DroneState droneState;
+
+	bool travelAllowed;
 
 	MyoObserver::Myo_Gesture myoGestureBefore;
 

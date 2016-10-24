@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
 	std::string leapTopicPose = "/leapmotion/pose";
 	std::string leapGrabTopic = "/leapmotion/grab";
 	std::string oculusTopic = "oculus/orientation";
+	bool travelAllowed = true;
 
 	if (local_node.getParam("takeoff_topic", takeoffTopic)) {
 		std::cout << "Set parameter takeoff_topic to " << takeoffTopic
@@ -59,10 +60,13 @@ int main(int argc, char** argv) {
 		std::cout << "Set parameter oculus_topic to " << oculusTopic
 				<< std::endl;
 	}
+	if(local_node.getParam("travel_allowed", travelAllowed)) {
+		std::cout << "Set parameter travelAllowed to" << travelAllowed << std::endl;
+	}
 
 	LeapMyoOculusDroneControl droneController(node, takeoffTopic, landTopic,
 			resetTopic, steerTopic, droneStateTopic, flatTrimSrv, myoTopic,
-			leapTopicPose, leapGrabTopic, oculusTopic);
+			leapTopicPose, leapGrabTopic, oculusTopic, travelAllowed);
 
 	droneController.controlDrone();
 
