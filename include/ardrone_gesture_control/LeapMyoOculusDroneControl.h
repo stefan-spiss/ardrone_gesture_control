@@ -17,9 +17,6 @@
 #include <ardrone_gesture_control/LeapObserver.h>
 #include <ardrone_gesture_control/OculusObserver.h>
 
-// If 0 only up down and turning is possible
-#define TRAVEL 0
-
 // All thresholds for yaw pitch roll in radiant
  //Turn head left or right (negative)
 #define OCULUS_YAW_THRESHOLD 0.25
@@ -29,7 +26,7 @@
  //Tilt head to the left or right (negative)
 #define OCULUS_ROLL_THRESHOLD 0.25
 
-#define DRONE_SPEED_PITCH_ROLL 0.1
+#define DRONE_SPEED_PITCH_ROLL 0.25
 #define DRONE_SPEED_YAW_UPDOWN 0.5
 
 #define EPSILON 0.000001

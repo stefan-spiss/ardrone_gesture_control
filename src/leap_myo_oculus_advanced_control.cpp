@@ -61,9 +61,8 @@ int main(int argc, char** argv) {
 				<< std::endl;
 	}
 	if(local_node.getParam("travel_allowed", travelAllowed)) {
-		std::cout << "Set parameter travelAllowed to" << travelAllowed << std::endl;
+		std::cout << "Set parameter travelAllowed to " << travelAllowed << std::endl;
 	}
-
 	LeapMyoOculusDroneControl droneController(node, takeoffTopic, landTopic,
 			resetTopic, steerTopic, droneStateTopic, flatTrimSrv, myoTopic,
 			leapTopicPose, leapGrabTopic, oculusTopic, travelAllowed);
