@@ -7,7 +7,7 @@
 
 #include <ardrone_gesture_control/LeapMyoOculusDroneControl.h>
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 	ros::init(argc, argv, "leap_myo_oculus_drone_control_node");
 	ros::NodeHandle node;
 	ros::NodeHandle local_node("~");
@@ -23,10 +23,14 @@ int main(int argc, char** argv) {
 	std::string leapGrabTopic = "/leapmotion/grab";
 	std::string oculusTopic = "oculus/orientation";
 	bool travelAllowed = true;
+	float maxDroneSpeedPitch = 0.25;
+	float maxDroneSpeedRoll = 0.25;
+	float maxDroneSpeedYaw = 0.5;
+	float maxDroneSpeedUpDown = 0.5;
 
 	if (local_node.getParam("takeoff_topic", takeoffTopic)) {
 		std::cout << "Set parameter takeoff_topic to " << takeoffTopic
-				<< std::endl;
+		          << std::endl;
 	}
 	if (local_node.getParam("land_topic", landTopic)) {
 		std::cout << "Set parameter land_topic to " << landTopic << std::endl;
@@ -39,33 +43,47 @@ int main(int argc, char** argv) {
 	}
 	if (local_node.getParam("droneState_topic", droneStateTopic)) {
 		std::cout << "Set parameter droneState_topic to " << droneStateTopic
-				<< std::endl;
+		          << std::endl;
 	}
 	if (local_node.getParam("flatTrim_srv", flatTrimSrv)) {
 		std::cout << "Set parameter flatTrim_srv to " << flatTrimSrv
-				<< std::endl;
+		          << std::endl;
 	}
 	if (local_node.getParam("myo_topic", myoTopic)) {
 		std::cout << "Set parameter myo_topic to " << myoTopic << std::endl;
 	}
 	if (local_node.getParam("leapPose_topic", leapTopicPose)) {
 		std::cout << "Set parameter leapPose_topic to " << leapTopicPose
-				<< std::endl;
+		          << std::endl;
 	}
 	if (local_node.getParam("leapGrab_topic", leapGrabTopic)) {
 		std::cout << "Set parameter leapGrab_topic to " << leapGrabTopic
-				<< std::endl;
+		          << std::endl;
 	}
 	if (local_node.getParam("oculus_topic", oculusTopic)) {
 		std::cout << "Set parameter oculus_topic to " << oculusTopic
-				<< std::endl;
+		          << std::endl;
 	}
-	if(local_node.getParam("travel_allowed", travelAllowed)) {
-		std::cout << "Set parameter travelAllowed to " << travelAllowed << std::endl;
+	if (local_node.getParam("travel_allowed", travelAllowed)) {
+		std::cout << "Set parameter travel_allowed to " << travelAllowed << std::endl;
+	}
+	if (local_node.getParam("max_drone_speed_pitch", maxDroneSpeedPitch)) {
+		std::cout << "Set parameter max_drone_speed_pitch to " << maxDroneSpeedPitch << std::endl;
+	}
+	if (local_node.getParam("max_drone_speed_roll", maxDroneSpeedRoll)) {
+		std::cout << "Set parameter max_drone_speed_roll to " << maxDroneSpeedRoll << std::endl;
+	}
+	if (local_node.getParam("max_drone_speed_yaw", maxDroneSpeedYaw)) {
+		std::cout << "Set parameter max_drone_speed_yaw to " << maxDroneSpeedYaw << std::endl;
+	}
+	if (local_node.getParam("max_drone_speed_updown", maxDroneSpeedUpDown)) {
+		std::cout << "Set parameter max_drone_speed_updown to " << maxDroneSpeedUpDown << std::endl;
 	}
 	LeapMyoOculusDroneControl droneController(node, takeoffTopic, landTopic,
-			resetTopic, steerTopic, droneStateTopic, flatTrimSrv, myoTopic,
-			leapTopicPose, leapGrabTopic, oculusTopic, travelAllowed);
+	                                          resetTopic, steerTopic, droneStateTopic, flatTrimSrv, myoTopic,
+	                                          leapTopicPose, leapGrabTopic, oculusTopic, travelAllowed,
+	                                          maxDroneSpeedPitch, maxDroneSpeedRoll, maxDroneSpeedYaw,
+	                                          maxDroneSpeedUpDown);
 
 	droneController.controlDrone();
 

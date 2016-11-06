@@ -13,10 +13,13 @@ LeapMyoOculusDroneControl::LeapMyoOculusDroneControl(ros::NodeHandle &node,
                                                      std::string &droneStateTopic, std::string &flatTrimSrv,
                                                      std::string &myoTopic, std::string &leapTopicPose,
                                                      std::string &leapGrabTopic, std::string &oculusTopic,
-                                                     bool travelAllowed) :
+                                                     bool travelAllowed, float maxDroneSpeedPitch,
+                                                     float maxDroneSpeedRoll, float maxDroneSpeedYaw,
+                                                     float maxDroneSpeedUpDown) :
 		node(node), myoObserver(), leapObserver(), oculusObserver(), droneState(
 		Emergency), myoGestureBefore(MyoObserver::NOT_CONNECTED), loopRate(
-		10), travelAllowed(travelAllowed) {
+		10), travelAllowed(travelAllowed), maxDroneSpeedPitch(maxDroneSpeedPitch), maxDroneSpeedRoll(maxDroneSpeedRoll),
+		maxDroneSpeedYaw(maxDroneSpeedYaw), maxDroneSpeedUpDown(maxDroneSpeedUpDown) {
 	takeoff_pub = node.advertise<std_msgs::Empty>(takeoffTopic, 1, true);
 	land_pub = node.advertise<std_msgs::Empty>(landTopic, 1, true);
 	reset_pub = node.advertise<std_msgs::Empty>(resetTopic, 1, true);
@@ -139,30 +142,34 @@ void LeapMyoOculusDroneControl::send_control() {
 						std::cout << "Rotate counterclockwise" << std::endl;
 						twist.angular.z = calculateSpeed(OCULUS_YAW_THRESHOLD,
 						                                 OCULUS_MAX_YAW_THRESHOLD, oculusObserver.getY(),
-						                                 DRONE_SPEED_YAW_UPDOWN);
+						                                 maxDroneSpeedYaw);
 					} else if (oculusObserver.getY() < -OCULUS_YAW_THRESHOLD) {
 						printf("Rotate clockwise\n");
 						twist.angular.z = -calculateSpeed(-OCULUS_YAW_THRESHOLD,
 						                                  -OCULUS_MAX_YAW_THRESHOLD, oculusObserver.getY(),
-						                                  DRONE_SPEED_YAW_UPDOWN);
+						                                  maxDroneSpeedYaw);
 					}
 
 					if (travelAllowed) {
 						// Control drone speed front and back
 						if (oculusObserver.getX() < -OCULUS_PITCH_THRESHOLD) {
 							printf("Fly front\n");
-							twist.linear.x = DRONE_SPEED_PITCH_ROLL;
+							twist.linear.x = calculateSpeed(-OCULUS_PITCH_THRESHOLD, -OCULUS_MAX_PITCH_THRESHOLD,
+							                                oculusObserver.getX(), maxDroneSpeedPitch);
 						} else if (oculusObserver.getX() > OCULUS_PITCH_THRESHOLD) {
 							printf("Fly back\n");
-							twist.linear.x = -DRONE_SPEED_PITCH_ROLL;
+							twist.linear.x = -calculateSpeed(OCULUS_PITCH_THRESHOLD, OCULUS_MAX_PITCH_THRESHOLD,
+							                                 oculusObserver.getX(), maxDroneSpeedPitch);
 						}
 						// Control drone speed left and right
 						if (oculusObserver.getZ() > OCULUS_ROLL_THRESHOLD) {
 							printf("Fly left\n");
-							twist.linear.y = DRONE_SPEED_PITCH_ROLL;
+							twist.linear.y = calculateSpeed(OCULUS_ROLL_THRESHOLD, OCULUS_MAX_ROLL_THRESHOLD,
+							                                oculusObserver.getZ(), maxDroneSpeedRoll);
 						} else if (oculusObserver.getZ() < -OCULUS_ROLL_THRESHOLD) {
 							printf("Fly right\n");
-							twist.linear.y = -DRONE_SPEED_PITCH_ROLL;
+							twist.linear.y = -calculateSpeed(-OCULUS_ROLL_THRESHOLD, -OCULUS_MAX_ROLL_THRESHOLD,
+							                                 oculusObserver.getZ(), maxDroneSpeedRoll);
 						}
 					}
 
@@ -175,7 +182,7 @@ void LeapMyoOculusDroneControl::send_control() {
 			case MyoObserver::RIGHT:
 				if (leapObserver.getHandPose() == LeapObserver::MYO_RIGHT_SWIPE) {
 					printf("Fly up\n");
-					twist.linear.z = DRONE_SPEED_YAW_UPDOWN;
+					twist.linear.z = maxDroneSpeedUpDown;
 					steer_pub.publish(twist);
 				}
 				break;
@@ -184,7 +191,7 @@ void LeapMyoOculusDroneControl::send_control() {
 			case MyoObserver::LEFT:
 				if (leapObserver.getHandPose() == LeapObserver::MYO_LEFT_SWIPE) {
 					printf("Fly down\n");
-					twist.linear.z = -DRONE_SPEED_YAW_UPDOWN;
+					twist.linear.z = -maxDroneSpeedUpDown;
 					steer_pub.publish(twist);
 				}
 				break;

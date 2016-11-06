@@ -6,5 +6,9 @@
 	<node name="oculus_viewer" pkg="oculus_ros" type="ros_viewer"/>
 	<node name="ardrone_gesture_control" pkg="ardrone_gesture_control" type="advanced_lmo_control" output="screen">
 		<param name="travel_allowed" type="boolean" value="true"/>
+		<param name="max_drone_speed_pitch" type="double" value="1.0"/>
+		<param name="max_drone_speed_roll" type="double" value="1.0"/>
+		<param name="max_drone_speed_yaw" type="double" value="1.0"/>
+		<param name="max_drone_speed_updown" type="double" value="1.0"/>
 	</node>
 </launch>
