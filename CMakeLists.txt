@@ -85,6 +85,7 @@ add_executable(leap_myo_oculus_control ${SOURCES_LMOC})
 add_executable(advanced_lmo_control ${SOURCES_LMOAC})
 add_executable(joypad_oculus_control ${SOURCES_JOC})
 add_executable(joypad_control ${SOURCES_JC})
+add_executable(leapmotion_test src/leapmotion_testprint.cpp src/LeapObserver.cpp)
 
 
 ## Specify libraries to link a library or executable target against
@@ -105,4 +106,7 @@ target_link_libraries(joypad_oculus_control
 )
 target_link_libraries(joypad_control
    ${catkin_LIBRARIES}
+)
+target_link_libraries(leapmotion_test
+	${catkin_LIBRARIES}
 )
