@@ -38,16 +38,16 @@
 
 #define EPSILON 0.000001
 
-class JoypadOculusControl {
+class JoypadOculusControlTactileFeedback {
 public:
-	JoypadOculusControl(ros::NodeHandle &node, std::string &takeoffTopic,
-	                    std::string &landTopic, std::string &resetTopic,
-	                    std::string &steerTopic, std::string &droneStateTopic,
+	JoypadOculusControlTactileFeedback(ros::NodeHandle &node, std::string &takeoffTopic, std::string &landTopic,
+	                    std::string &resetTopic, std::string &steerTopic, std::string &droneStateTopic,
 	                    std::string &flatTrimSrv, std::string &joypadAxisTopic, std::string &joypadBtnTopic,
-	                    std::string &oculusTopic, bool travelAllowed = true, float maxDroneSpeedPitch = 0.25,
-	                    float maxDroneSpeedRoll = 0.25, float maxDroneSpeedYaw = 0.5, float maxDroneSpeedUpDown = 0.5);
+	                    std::string &oculusTopic, std::string &tactileMethodChangeSrv, bool travelAllowed = true,
+	                    float maxDroneSpeedPitch = 0.25, float maxDroneSpeedRoll = 0.25, float maxDroneSpeedYaw = 0.5,
+	                    float maxDroneSpeedUpDown = 0.5);
 
-	virtual ~JoypadOculusControl();
+	virtual ~JoypadOculusControlTactileFeedback();
 
 	void controlDrone();
 
@@ -80,12 +80,15 @@ private:
 	ros::Subscriber oculus_sub;
 	ros::Subscriber joypadAxis_sub;
 	ros::Subscriber joypadBtn_sub;
+	ros::ServiceClient changeFeedbackMethod_srv;
 
 	DroneState droneState;
 
 	const bool travelAllowed;
 
 	const float maxDroneSpeedPitch, maxDroneSpeedRoll, maxDroneSpeedYaw, maxDroneSpeedUpDown;
+
+	int currentFeedbackMethod;
 
 	void quadrotorInfoCallback(
 			const ardrone_autonomy::Navdata::ConstPtr &navdata);

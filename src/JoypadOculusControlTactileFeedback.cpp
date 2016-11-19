@@ -1,28 +1,26 @@
-/*
- * JoypadOculusControl.cpp
- *
- *  Created on: Apr 20, 2016
- *      Author: steve
- */
+#include <ardrone_gesture_control/JoypadOculusControlTactileFeedback.h>
+#include <tactile_feedback_quadcopter_ros/ChangeFeedbackMethod.h>
 
-#include <ardrone_gesture_control/JoypadOculusControl.h>
-
-JoypadOculusControl::JoypadOculusControl(ros::NodeHandle &node,
-                                         std::string &takeoffTopic, std::string &landTopic,
-                                         std::string &resetTopic, std::string &steerTopic,
-                                         std::string &droneStateTopic, std::string &flatTrimSrv,
-                                         std::string &joypadAxisTopic, std::string &joypadBtnTopic,
-                                         std::string &oculusTopic, bool travelAllowed, float maxDroneSpeedPitch,
-                                         float maxDroneSpeedRoll, float maxDroneSpeedYaw, float maxDroneSpeedUpDown) :
-		node(node), oculusObserver(), gamepadObserver(), droneState(Emergency), loopRate(10),
-		travelAllowed(travelAllowed), maxDroneSpeedPitch(maxDroneSpeedPitch), maxDroneSpeedRoll(maxDroneSpeedRoll),
-		maxDroneSpeedYaw(maxDroneSpeedYaw), maxDroneSpeedUpDown(maxDroneSpeedUpDown) {
+JoypadOculusControlTactileFeedback::JoypadOculusControlTactileFeedback(ros::NodeHandle &node, std::string &takeoffTopic, std::string &landTopic,
+                                         std::string &resetTopic, std::string &steerTopic, std::string &droneStateTopic,
+                                         std::string &flatTrimSrv, std::string &joypadAxisTopic,
+                                         std::string &joypadBtnTopic, std::string &oculusTopic,
+                                         std::string &tactileMethodChangeSrv, bool travelAllowed,
+                                         float maxDroneSpeedPitch, float maxDroneSpeedRoll, float maxDroneSpeedYaw,
+                                         float maxDroneSpeedUpDown) : node(node), oculusObserver(), gamepadObserver(),
+                                                                      droneState(Emergency), loopRate(10),
+                                                                      travelAllowed(travelAllowed),
+                                                                      maxDroneSpeedPitch(maxDroneSpeedPitch),
+                                                                      maxDroneSpeedRoll(maxDroneSpeedRoll),
+                                                                      maxDroneSpeedYaw(maxDroneSpeedYaw),
+                                                                      maxDroneSpeedUpDown(maxDroneSpeedUpDown),
+                                                                      currentFeedbackMethod(0) {
 	takeoff_pub = node.advertise<std_msgs::Empty>(takeoffTopic, 1, true);
 	land_pub = node.advertise<std_msgs::Empty>(landTopic, 1, true);
 	reset_pub = node.advertise<std_msgs::Empty>(resetTopic, 1, true);
 	steer_pub = node.advertise<geometry_msgs::Twist>(steerTopic, 1);
 	droneState_sub = node.subscribe(droneStateTopic, 1,
-	                                &JoypadOculusControl::quadrotorInfoCallback, this);
+	                                &JoypadOculusControlTactileFeedback::quadrotorInfoCallback, this);
 
 	flattrim_srv = node.serviceClient<std_srvs::Empty>(flatTrimSrv, 1);
 
@@ -34,16 +32,23 @@ JoypadOculusControl::JoypadOculusControl(ros::NodeHandle &node,
 	joypadBtn_sub = node.subscribe<std_msgs::Int16MultiArray>(
 			joypadBtnTopic, 1, &GamepadObserver::gamepadBtnCallback,
 			&gamepadObserver);
+
+	changeFeedbackMethod_srv = node.serviceClient<tactile_feedback_quadcopter_ros::ChangeFeedbackMethod>(
+			tactileMethodChangeSrv);
 }
 
-JoypadOculusControl::~JoypadOculusControl() {
+JoypadOculusControlTactileFeedback::~JoypadOculusControlTactileFeedback() {
 }
 
-void JoypadOculusControl::controlDrone() {
+void JoypadOculusControlTactileFeedback::controlDrone() {
 	while (ros::ok()) {
 		send_control();
-		if(gamepadObserver.yButtonPressed()) {
-
+		if (gamepadObserver.xButtonPressed()) {
+			tactile_feedback_quadcopter_ros::ChangeFeedbackMethod changeMethod;
+			currentFeedbackMethod = (currentFeedbackMethod + 1) % 3;
+			changeMethod.request.method = currentFeedbackMethod;
+			changeFeedbackMethod_srv.call(changeMethod);
+			std::cout << "Feedback Method: " << currentFeedbackMethod << std::endl;
 		}
 		ros::spinOnce();
 		loopRate.sleep();
@@ -55,7 +60,7 @@ void JoypadOculusControl::controlDrone() {
 
 }
 
-void JoypadOculusControl::quadrotorInfoCallback(
+void JoypadOculusControlTactileFeedback::quadrotorInfoCallback(
 		const ardrone_autonomy::Navdata::ConstPtr &navdata) {
 	switch (navdata->state) {
 		case 0:
@@ -91,7 +96,7 @@ void JoypadOculusControl::quadrotorInfoCallback(
 	}
 }
 
-bool JoypadOculusControl::isFlying() {
+bool JoypadOculusControlTactileFeedback::isFlying() {
 	switch (droneState) {
 		case Flying:
 		case Hovering:
@@ -101,7 +106,7 @@ bool JoypadOculusControl::isFlying() {
 	return false;
 }
 
-double JoypadOculusControl::calculateSpeed(double minAngle, double maxAngle,
+double JoypadOculusControlTactileFeedback::calculateSpeed(double minAngle, double maxAngle,
                                            double currentAngle, double maxSpeed) {
 	if (fabs(currentAngle) > fabs(maxAngle)) {
 		currentAngle = maxAngle;
@@ -109,7 +114,7 @@ double JoypadOculusControl::calculateSpeed(double minAngle, double maxAngle,
 	return (currentAngle - minAngle) * maxSpeed / (maxAngle - minAngle);
 }
 
-void JoypadOculusControl::send_control() {
+void JoypadOculusControlTactileFeedback::send_control() {
 	/** Service for flattrim */
 	std_srvs::Empty flattrim_srv_srvs;
 

@@ -20,9 +20,9 @@
 #define JOYPAD_THRESHOLD 0.4
 #define JOYPAD_MAX_THRESHOLD 0.95
 
-#define DRONE_SPEED_PITCH_ROLL 0.1
-#define DRONE_SPEED_PITCH_ROLL_JOYPAD 0.5
-#define DRONE_SPEED_YAW_UPDOWN 0.5
+//#define DRONE_SPEED_PITCH_ROLL 0.1
+//#define DRONE_SPEED_PITCH_ROLL_JOYPAD 0.5
+//#define DRONE_SPEED_YAW_UPDOWN 0.5
 
 
 
@@ -31,9 +31,12 @@
 class JoypadControl {
 public:
 	JoypadControl(ros::NodeHandle &node, std::string &takeoffTopic,
-			std::string &landTopic, std::string &resetTopic,
-			std::string &steerTopic, std::string &droneStateTopic,
-			std::string &flatTrimSrv, std::string &joypadAxisTopic, std::string &joypadBtnTopic);
+	              std::string &landTopic, std::string &resetTopic,
+	              std::string &steerTopic, std::string &droneStateTopic,
+	              std::string &flatTrimSrv, std::string &joypadAxisTopic, std::string &joypadBtnTopic,
+	              float maxDroneSpeedPitch = 0.25, float maxDroneSpeedRoll = 0.25, float maxDroneSpeedYaw = 0.5,
+	              float maxDroneSpeedUpDown = 0.5);
+
 	virtual ~JoypadControl();
 
 	void controlDrone();
@@ -68,10 +71,13 @@ private:
 
 	DroneState droneState;
 
+	const float maxDroneSpeedPitch, maxDroneSpeedRoll, maxDroneSpeedYaw, maxDroneSpeedUpDown;
+
 	void quadrotorInfoCallback(
-			const ardrone_autonomy::Navdata::ConstPtr& navdata);
+			const ardrone_autonomy::Navdata::ConstPtr &navdata);
 
 	bool isFlying();
+
 	double calculateSpeed(double minAngle, double maxAngle, double currentAngle, double maxSpeed);
 
 	void send_control();

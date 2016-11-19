@@ -14,7 +14,7 @@
         <arg name="y" value="1.5"/>
     </include>
 
-    <include file="$(find ardrone_gesture_control)/launch/start_oculus_gamepad.launch"/>
+    <include file="$(find ardrone_gesture_control)/launch/start_oculus_gamepad_tactile_feedback.launch"/>
     <node name="tactile_feedback" pkg="tactile_feedback_quadcopter_ros" type="tactile_feedback_node">
         <param name="feedback_method" value="1"/>
         <param name="serial_port" value="/dev/ttyUSB0"/>
