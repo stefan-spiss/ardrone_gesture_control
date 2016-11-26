@@ -19,14 +19,14 @@
 
 // All thresholds for yaw pitch roll in radiant
 //Turn head left or right (negative)
-#define OCULUS_YAW_THRESHOLD 0.25
+#define OCULUS_YAW_THRESHOLD 0.2//0.25
 #define OCULUS_MAX_YAW_THRESHOLD 0.5
 //Turn head up or down (negative)
-#define OCULUS_PITCH_THRESHOLD 0.25
-#define OCULUS_MAX_PITCH_THRESHOLD 0.5
+#define OCULUS_PITCH_THRESHOLD 0.15 //0.25
+#define OCULUS_MAX_PITCH_THRESHOLD 0.4 //0.5
 //Tilt head to the left or right (negative)
-#define OCULUS_ROLL_THRESHOLD 0.25
-#define OCULUS_MAX_ROLL_THRESHOLD 0.5
+#define OCULUS_ROLL_THRESHOLD 0.1 //0.25
+#define OCULUS_MAX_ROLL_THRESHOLD 0.35 //0.5
 
 #define JOYPAD_THRESHOLD 0.5
 #define JOYPAD_MAX_THRESHOLD 0.95

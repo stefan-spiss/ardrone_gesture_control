@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <launch>
     <node name="oculus_driver" pkg="oculus_ros" type="ros_driver"/>
-    <node name="oculus_viewer" pkg="oculus_ros" type="ros_viewer" output="screen"/>
     <node name="gamepad" pkg="ardrone_gesture_control" type="controllerInput.py"/>
     <node name="ardrone_control" pkg="ardrone_gesture_control" type="joypad_oculus_control" output="screen">
         <param name="travel_allowed" type="boolean" value="true"/>
@@ -10,4 +9,5 @@
         <param name="max_drone_speed_yaw" type="double" value="1.0"/>
         <param name="max_drone_speed_updown" type="double" value="1.0"/>
     </node>
+    <node name="oculus_viewer" pkg="oculus_ros" type="ros_viewer"/>
 </launch>
