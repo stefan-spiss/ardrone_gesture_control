@@ -31,6 +31,7 @@ public:
 private:
 
 	bool aButton, bButton, xButton, yButton;
+    bool xPressedBefore;
 
 	float leftStick[2];
 	float rightStick[2];

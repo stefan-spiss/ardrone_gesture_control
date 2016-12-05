@@ -8,7 +8,7 @@
 #include <ardrone_gesture_control/GamepadObserver.h>
 
 GamepadObserver::GamepadObserver() :
-		aButton(false), bButton(false), xButton(false), yButton(false) {
+		aButton(false), bButton(false), xButton(false), yButton(false), xPressedBefore(false) {
 	leftStick[0] = leftStick[1] = rightStick[0] = rightStick[1] = 0.0;
 }
 
@@ -35,8 +35,14 @@ bool GamepadObserver::bButtonPressed() {
 bool GamepadObserver::xButtonPressed() {
 	if (xButton) {
 		xButton = false;
-		return true;
+        if(!xPressedBefore) {
+            xPressedBefore = true;
+            return true;
+        } else {
+            return false;
+        }
 	}
+    xPressedBefore = false;
 	return false;
 }
 
